@@ -606,10 +606,11 @@ wheels = [
 [[package]]
 name = "emotion-mlops"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "boto3" },
     { name = "lightning" },
+    { name = "matplotlib" },
     { name = "mlflow" },
     { name = "pytest" },
     { name = "timm" },
@@ -619,6 +620,7 @@ dependencies = [
 requires-dist = [
     { name = "boto3", specifier = ">=1.42.94" },
     { name = "lightning", specifier = ">=2.6.1" },
+    { name = "matplotlib", specifier = ">=3.10.8" },
     { name = "mlflow", specifier = ">=3.11.1" },
     { name = "pytest", specifier = ">=9.0.3" },
     { name = "timm", specifier = ">=1.0.26" },

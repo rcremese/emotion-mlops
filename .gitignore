@@ -8,5 +8,11 @@ wheels/
 
 # Virtual environments
 .venv
+
+# MLFlow 
+mlflow.db
+ml-runs
+
+# User specific directories
 .vscode
 scratch.py

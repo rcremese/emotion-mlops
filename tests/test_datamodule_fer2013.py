@@ -6,7 +6,7 @@ import pytest
 from PIL import Image
 import numpy as np
 
-from src.data.datamodule_fer2013 import FER2013DataModule
+from emotion_mlops.data.datamodule_fer2013 import FER2013DataModule
 
 
 def create_fake_zip():
