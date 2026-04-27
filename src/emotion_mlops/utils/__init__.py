@@ -5,3 +5,4 @@ from .paths import (
     REGISTRY as REGISTRY,
 )
 from .splits import create_stratified_split as create_stratified_split
+from .splits import create_stratified_indexes as create_stratified_indexes

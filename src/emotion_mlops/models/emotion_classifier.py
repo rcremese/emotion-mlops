@@ -26,9 +26,15 @@ class EmotionClassifier(L.LightningModule):
 
         self.criterion = nn.CrossEntropyLoss()
         self.accuracy = torchmetrics.Accuracy("multiclass", num_classes=num_classes)
-        self.f1_score = torchmetrics.F1Score("multiclass", num_classes=num_classes)
-        self.precision = torchmetrics.Precision("multiclass", num_classes=num_classes)
-        self.recall = torchmetrics.Recall("multiclass", num_classes=num_classes)
+        self.precision = torchmetrics.Precision(
+            "multiclass", num_classes=num_classes, average="weighted"
+        )
+        self.recall = torchmetrics.Recall(
+            "multiclass", num_classes=num_classes, average="weighted"
+        )
+        self.f1_score = torchmetrics.F1Score(
+            "multiclass", num_classes=num_classes, average="weighted"
+        )
 
     def forward(self, x):
         return self.model(x)
@@ -40,12 +46,13 @@ class EmotionClassifier(L.LightningModule):
         acc = self.accuracy(logits, labels)
 
         self.log("train/loss", loss, on_epoch=True, prog_bar=True)
-        self.log("train/acc", acc, on_step=False, on_epoch=True, prog_bar=True)
+        self.log("train/accuracy", acc, on_step=False, on_epoch=True, prog_bar=True)
 
         return loss
 
     def validation_step(self, batch, batch_idx):
         images, labels = batch
+
         logits = self(images)
         loss = self.criterion(logits, labels)
         acc = self.accuracy(logits, labels)
@@ -53,25 +60,18 @@ class EmotionClassifier(L.LightningModule):
         rec = self.recall(logits, labels)
         f1 = self.f1_score(logits, labels)
 
-        self.log(
-            "val/loss", loss, logger=True, on_step=False, on_epoch=True, prog_bar=True
-        )
-        self.log(
-            "val/acc", acc, logger=True, on_step=False, on_epoch=True, prog_bar=True
-        )
-        self.log(
-            "val/f1_score", f1, logger=True, on_step=False, on_epoch=True, prog_bar=True
-        )
-        self.log(
-            "val/precision",
-            prec,
+        self.log_dict(
+            {"val/loss": loss, "val/accuracy": acc},
             logger=True,
             on_step=False,
             on_epoch=True,
             prog_bar=True,
         )
-        self.log(
-            "val/recall", rec, logger=True, on_step=False, on_epoch=True, prog_bar=True
+        self.log_dict(
+            {"val/precision": prec, "val/recall": rec, "val/f1_score": f1},
+            on_epoch=True,
+            logger=True,
+            on_step=False,
         )
 
     def configure_optimizers(self):

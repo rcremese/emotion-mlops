@@ -1,5 +1,6 @@
 import mlflow
-import mlflow.pytorch as mlfp
+
+# import mlflow.pytorch as mlfp
 from lightning.pytorch import Trainer
 from lightning.pytorch.loggers import MLFlowLogger
 # from lightning.pytorch.callbacks import ModelCheckpoint
@@ -43,7 +44,7 @@ def train_one_run(
         # callbacks=[checkpoint],
     )
 
-    mlfp.autolog()
+    # mlfp.autolog()
 
     with mlflow.start_run(run_id=run_id):
         trainer.fit(model, dm)
@@ -52,4 +53,4 @@ def train_one_run(
 
 
 if __name__ == "__main__":
-    train_one_run(backbone="resnet18", lr=1e-3, batch_size=128, nb_epochs=20)
+    train_one_run(backbone="resnet18", lr=1e-3, batch_size=128, nb_epochs=2)

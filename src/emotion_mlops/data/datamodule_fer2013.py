@@ -1,7 +1,7 @@
 import logging
 from pathlib import Path
 from emotion_mlops.utils import (
-    create_stratified_split,
+    create_stratified_indexes,
     PROJECT_ROOT,
     download_zip_from_s3,
 )
@@ -11,6 +11,7 @@ import torch
 from torch.utils.data import DataLoader
 import torchvision.transforms.v2 as v2
 from torchvision.datasets import ImageFolder
+from torch.utils.data import Subset
 
 
 class FER2013DataModule(L.LightningDataModule):
@@ -71,10 +72,19 @@ class FER2013DataModule(L.LightningDataModule):
     def setup(self, stage=None):
         """Charge les datasets avec ImageFolder."""
         if stage in (None, "fit"):
-            fit_dataset = ImageFolder(root=self.root.joinpath("train"))
-            self.train_dataset, self.val_dataset = create_stratified_split(
-                fit_dataset, val_ratio=0.2, seed=self.seed
+            train_dataset = ImageFolder(
+                root=self.root.joinpath("train"), transform=self.train_transforms
             )
+            val_dataset = ImageFolder(
+                root=self.root.joinpath("train"), transform=self.val_transforms
+            )
+
+            # fit_dataset = ImageFolder(root=self.root.joinpath("train"))
+            train_indx, val_indx = create_stratified_indexes(
+                train_dataset, val_ratio=0.2, seed=self.seed
+            )
+            self.train_dataset = Subset(train_dataset, train_indx)
+            self.val_dataset = Subset(val_dataset, val_indx)
 
         if stage in (None, "test"):
             self.test_dataset = ImageFolder(
