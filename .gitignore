@@ -10,9 +10,11 @@ wheels/
 .venv
 
 # MLFlow 
-mlflow.db
-ml-runs
+mlflow.db*
+mlruns
 
 # User specific directories
 .vscode
+.init.sh
+data
 scratch.py
